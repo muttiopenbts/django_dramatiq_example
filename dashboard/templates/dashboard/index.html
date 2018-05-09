@@ -11,14 +11,16 @@
     {% else %}
       <table>
         <tr>
-          <th>Type</th>
           <th>Status</th>
+          <th>Command List</th>
+          <th>Output</th>
           <th>Date</th>
         </tr>
         {% for job in jobs %}
           <tr>
-            <td>{{ job.type }}</td>
             <td>{{ job.status }}</td>
+            <td>{{ job.cmd_list }}</td>
+            <td>{{ job.get_output }}</td>
             <td>{{ job.created_at }}</td>
           </tr>
         {% endfor %}
@@ -28,12 +30,7 @@
     <h2>Submit a job</h2>
     <form action="" method="POST">
       {% csrf_token %}
-      <label>Job type
-        <select name="type">
-          <option value="slow">Slow</option>
-          <option value="fast">Fast</option>
-        </select>
-      </label>
+      <input type="text" name="cmd_list"></input>
       <button type="submit">Submit</button>
     </form>
   </body>

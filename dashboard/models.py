@@ -1,16 +1,10 @@
 import time
-
+import subprocess
+import base64
 from django.db import models
 
 
 class Job(models.Model):
-    TYPE_SLOW = "slow"
-    TYPE_FAST = "fast"
-    TYPES = (
-        (TYPE_SLOW, "Slow job"),
-        (TYPE_FAST, "Fast job"),
-    )
-
     STATUS_PENDING = "pending"
     STATUS_DONE = "done"
     STATUSES = (
@@ -18,10 +12,8 @@ class Job(models.Model):
         (STATUS_DONE, "Done"),
     )
 
-    type = models.CharField(
-        max_length=4,
-        choices=TYPES,
-    )
+    _output = models.TextField(default='')
+    cmd_list = models.TextField(default='',help_text='Command separated list of command and parameters.')
     status = models.CharField(
         max_length=7,
         choices=STATUSES,
@@ -31,10 +23,15 @@ class Job(models.Model):
         auto_now_add=True,
     )
 
+    def get_output(self):
+        if self._output:
+            try:
+                output = base64.urlsafe_b64decode(self._output)
+                return output.decode('utf-8')
+            except:
+                pass
+
     def process(self):
-        if self.type == Job.TYPE_SLOW:
-            time.sleep(30)
-        elif self.type == Job.TYPE_FAST:
-            time.sleep(1)
-        else:
-            raise ValueError("Unknown job type.")
+        output = subprocess.check_output(self.cmd_list.split(','))
+        if output:
+            self._output = base64.urlsafe_b64encode(output).decode("utf-8")
