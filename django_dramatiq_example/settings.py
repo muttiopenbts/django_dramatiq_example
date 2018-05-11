@@ -11,18 +11,18 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import dj_database_url
-import redis
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+LOGIN_REDIRECT_URL = 'home'
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '3nnlzzo7f2_4o+t*fu!i1dr$6ijqfn(tk_=x(51+lndlc5@4o3'
+SECRET_KEY = os.environ.get("SECRET_KEY", '')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -88,13 +88,16 @@ DATABASES = {
 DATABASES['default'].update(dj_database_url.config(conn_max_age=600))
 
 # Tasks
+RABBIT_SERVER = os.environ.get("RABBIT_SERVER", '127.0.0.1')
+RABBIT_USER = os.environ.get("RABBIT_USER", 'guest')
+RABBIT_PASS = os.environ.get("RABBIT_PASS", 'guest')
 
-DRAMATIQ_REDIS_URL = os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0")
+DRAMATIQ_BROKER_URL = os.getenv(
+	"RABBITMQ_URL", "amqp://{}:{}@{}:5672".format(RABBIT_USER,RABBIT_PASS,RABBIT_SERVER)
+)
+
 DRAMATIQ_BROKER = {
-    "BROKER": "dramatiq.brokers.redis.RedisBroker",
-    "OPTIONS": {
-        "connection_pool": redis.ConnectionPool.from_url(DRAMATIQ_REDIS_URL),
-    },
+    "BROKER": "dramatiq.brokers.rabbitmq.RabbitmqBroker",
     "MIDDLEWARE": [
         "dramatiq.middleware.AgeLimit",
         "dramatiq.middleware.TimeLimit",
