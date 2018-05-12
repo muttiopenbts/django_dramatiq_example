@@ -23,17 +23,21 @@ class IndexView(LoginRequiredMixin, ListView):
 
 class JobCreate(LoginRequiredMixin, CreateView):
     model = Job
+    template_name = 'dashboard/index.html'
 
     fields = [
         'cmd_list',
+        'signature',
     ]
 
     success_url = reverse_lazy('dashboard:index')
 
     def form_valid(self, form):
+        user = self.request.user
         # Save the form and values to db
+        form.instance.user = user
         self.object = form.save()
-        # Now we can reference db record primary key
+        # Process job will reference job pk
         process_job.send(self.object.pk)
 
         return HttpResponseRedirect(self.get_success_url())

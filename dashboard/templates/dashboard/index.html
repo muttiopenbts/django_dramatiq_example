@@ -13,6 +13,8 @@
                   <th>Status</th>
                   <th>Command List</th>
                   <th>Output</th>
+                  <th>Created by</th>
+                  <th>Signature</th>
                   <th>Date</th>
                 </tr>
             </thead>
@@ -21,7 +23,13 @@
               <tr>
                 <td>{{ job.status }}</td>
                 <td>{{ job.cmd_list }}</td>
-				<td id="capture">{{ job.get_output|linebreaks }}</td>
+				<td id="capture">
+                    <div style="width: 500px; height: 300px; overflow: auto">
+                        {{ job.get_output|linebreaks }}
+                    </div>
+                </td>
+                <td>{{ job.user }}</td>
+                <td>{{ job.signature }}</td>
                 <td>{{ job.created_at }}</td>
               </tr>
             {% endfor %}
@@ -77,7 +85,8 @@
     <h2>Submit a job</h2>
     <form method="POST" action="/add/" class="post-form">
       {% csrf_token %}
-      <input type="text" name="cmd_list"></input>
+      <input type="text" name="cmd_list">Command</input>
+      <input type="text" name="signature"B64 encoded RSA signature</input>
       <button type="submit" class="btn btn-info">Submit</button>
     </form>
 {% endblock %}
