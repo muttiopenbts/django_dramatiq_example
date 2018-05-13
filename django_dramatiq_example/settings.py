@@ -27,7 +27,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", '')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', '.herokuapp.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1',]
 
 
 # Application definition
@@ -42,6 +42,8 @@ INSTALLED_APPS = [
 
     'django_dramatiq',
     'dashboard',
+#    'api',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -72,6 +74,14 @@ TEMPLATES = [
         },
     },
 ]
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
 
 WSGI_APPLICATION = 'django_dramatiq_example.wsgi.application'
 
