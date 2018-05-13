@@ -21,6 +21,11 @@ class GroupViewSet(LoginRequiredMixin,viewsets.ModelViewSet):
     serializer_class = GroupSerializer
 
 class JobViewSet(LoginRequiredMixin,viewsets.ModelViewSet):
+
+    def perform_create(self, serializer):
+        # Save the user that submitted the job request
+        serializer.save(user=self.request.user)
+
     """
     API endpoint that allows jobs to be viewed or edited.
     """

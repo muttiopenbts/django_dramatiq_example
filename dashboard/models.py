@@ -38,12 +38,19 @@ class Job(models.Model):
     )
     signature = models.TextField(default='', help_text='Paste security signature of command.')
     _output = models.TextField(default='')
-    cmd_list = models.TextField(default='',help_text='Command separated list of command and parameters.')
+
+    cmd_list = models.TextField(
+        help_text='Command separated list of command and parameters.',
+        blank=False,
+        null=False,
+    )
+
     status = models.CharField(
         max_length=7,
         choices=STATUSES,
         default=STATUS_PENDING,
     )
+
     created_at = models.DateTimeField(
         auto_now_add=True,
     )
@@ -121,6 +128,7 @@ class Job(models.Model):
                 self._output =  base64.urlsafe_b64encode(error).decode("utf-8")
         else:
             self._output =  base64.urlsafe_b64encode(error.encode('utf-8')).decode("utf-8")
+
 
 class UserPublicKey(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,default=1)
