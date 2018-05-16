@@ -1,85 +1,15 @@
 {% extends 'dashboard/base.html' %}
+{% load django_tables2 %}
 
 {% block body_block %}
-    <h1>Jobs</h1>
+
+      <h1>Jobs</h1>
     {% if not jobs %}
       <p>There are no known jobs.</p>
     {% else %}
-    <div class="table-responsive">
-      <table id="jobs_table" class="table table-hover table-bordered">
-          <caption>Ran jobs</caption>
-            <thead>
-                <tr>
-                  <th>Status</th>
-                  <th>Command List</th>
-                  <th>Output</th>
-                  <th>Created by</th>
-                  <th>Signature</th>
-                  <th>Date</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for job in jobs %}
-              <tr>
-                <td>{{ job.status }}</td>
-                <td>{{ job.cmd_list }}</td>
-				<td id="capture">
-                    <div style="width: 500px; height: 300px; overflow: auto">
-                        {{ job.get_output|linebreaks }}
-                    </div>
-                </td>
-                <td>{{ job.user }}</td>
-                <td>{{ job.signature }}</td>
-                <td>{{ job.created_at }}</td>
-              </tr>
-            {% endfor %}
-            </tbody>
-      </table>
+  <div class="table-responsive">
+      {% render_table table %}
   </div>
-    {% endif %}
-
-	{% if is_paginated %}
-	  <ul class="pagination">
-		{% if page_obj.has_previous %}
-		  <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
-		{% else %}
-		  <li class="disabled"><span>&laquo;</span></li>
-		{% endif %}
-		{% for i in paginator.page_range %}
-		  {% if page_obj.number == i %}
-			<li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-		  {% else %}
-			<li><a href="?page={{ i }}">{{ i }}</a></li>
-		  {% endif %}
-		{% endfor %}
-		{% if page_obj.has_next %}
-		  <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
-		{% else %}
-		  <li class="disabled"><span>&raquo;</span></li>
-		{% endif %}
-	  </ul>
-	{% endif %}
-
-    {% if jobs.has_other_pages %}
-      <ul class="pagination">
-        {% if jobs.has_previous %}
-          <li><a href="?page={{ jobs.previous_page_number }}">&laquo;</a></li>
-        {% else %}
-          <li class="disabled"><span>&laquo;</span></li>
-        {% endif %}
-        {% for i in jobs.paginator.page_range %}
-          {% if jobs.number == i %}
-            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-          {% else %}
-            <li><a href="?page={{ i }}">{{ i }}</a></li>
-          {% endif %}
-        {% endfor %}
-        {% if jobs.has_next %}
-          <li><a href="?page={{ jobs.next_page_number }}">&raquo;</a></li>
-        {% else %}
-          <li class="disabled"><span>&raquo;</span></li>
-        {% endif %}
-      </ul>
     {% endif %}
 
     <h2>Submit a job</h2>
