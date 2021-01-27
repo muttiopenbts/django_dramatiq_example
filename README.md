@@ -35,16 +35,16 @@ python manage.py createsuperuser
 ```
 pipenv shell
 export SECRET_KEY=“<SECRET_KEY>“
-export RABBIT_USER=“<NAME> #guest“
-export RABBIT_PASS=“<PASSWORD> #guest“
+export RABBIT_USER=“<NAME>" #guest
+export RABBIT_PASS=“<PASSWORD>" #guest
 python manage.py runserver
 ```
 * Run the workers(agents):  
 ```
 pipenv shell
 export SECRET_KEY=“<SECRET_KEY>“
-export RABBIT_USER=“<NAME> #guest“
-export RABBIT_PASS=“<PASSWORD> #guest“
+export RABBIT_USER=“<NAME>" #guest
+export RABBIT_PASS=“<PASSWORD>" #guest
 python manage.py rundramatiq
 ```
 
