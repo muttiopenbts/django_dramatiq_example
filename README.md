@@ -4,6 +4,8 @@
 
 An example app demonstrating [django_dramatiq][django_dramatiq].
 
+This example app is designed to accept OS commands from the http service and execute them on an agent.
+The user submitting the os command must digitally sign the request with a private key, which the corresponding public key in the app will verify the message.
 
 ## Setup
 ### Services
@@ -19,6 +21,8 @@ rabbitmq-server -detached
 ### Web
 * Run the web server: ```python manage.py runserver```
 * Run the workers: ```python manage.py rundramatiq```
+
+## Test
 
 
 ## License
