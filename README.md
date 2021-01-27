@@ -7,10 +7,11 @@ An example app demonstrating [django_dramatiq][django_dramatiq].
 
 ## Setup
 
-1. Clone the repo, then run `pipenv install`.
-1. Run [Redis][redis].
-1. Run the web server: `python manage.py runserver`
-1. Run the workers: `python manage.py rundramatiq`
+* Clone the repo, then run 
+```pipenv install```.
+* Run [Redis][redis].
+* Run the web server: ```python manage.py runserver```
+* Run the workers: ```python manage.py rundramatiq```
 
 
 ## License
