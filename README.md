@@ -66,6 +66,8 @@ python manage.py rundramatiq
 ```
 % base64 sha256_uname.sign
 ```
+* API
+http://127.0.0.1:8000/schema/
 
 ## License
 
