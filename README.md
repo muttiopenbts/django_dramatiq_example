@@ -6,14 +6,17 @@ An example app demonstrating [django_dramatiq][django_dramatiq].
 
 
 ## Setup
-* Services  
+### Services
+* rabbitmq  
 ```
 sudo apt install rabbitmq-server
 rabbitmq-server -detached
 ```
+### Code
 * Clone the repo, then run 
 ```pipenv install```.
 * Run [Redis][redis].
+### Web
 * Run the web server: ```python manage.py runserver```
 * Run the workers: ```python manage.py rundramatiq```
 
