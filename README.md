@@ -68,6 +68,8 @@ python manage.py rundramatiq
 ```
 * API   
 http://127.0.0.1:8000/schema/
+* UI
+http://127.0.0.1:8000/jobs/schema/?format=api
 
 ## License
 
