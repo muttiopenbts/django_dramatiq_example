@@ -29,7 +29,18 @@ rabbitmq-server -detached
 ```
 % openssl genrsa -out ~/cascade_2048_rsa.private 2048
 % openssl rsa -in ~/cascade_2048_rsa.private -out ~/cascade_2048_rsa.pub -pubout -outform PEM
-
+```
+* Sign the OS command  
+```
+% echo -n "uname" | openssl dgst -sha256 -sign ~/cascade_2048_rsa.private -out sha256_uname.sign
+```
+* Verify the signature 
+```
+% echo -n "uname"|openssl dgst -sha256 -verify ~/SynologyDrive/keys/cascade_2048_rsa.pub -signature sha256_uname.sign
+```
+* Prepare signature to submit to web app  
+```
+% base64 sha256_uname.sign
 ```
 
 ## License
