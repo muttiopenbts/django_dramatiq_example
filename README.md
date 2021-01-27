@@ -60,7 +60,7 @@ python manage.py rundramatiq
 ```
 * Verify the signature 
 ```
-% echo -n "uname"|openssl dgst -sha256 -verify ~/SynologyDrive/keys/cascade_2048_rsa.pub -signature sha256_uname.sign
+% echo -n "uname"|openssl dgst -sha256 -verify ~/cascade_2048_rsa.pub -signature sha256_uname.sign
 ```
 * Prepare signature to submit to web app  
 ```
