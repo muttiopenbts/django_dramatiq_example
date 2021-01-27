@@ -4,9 +4,9 @@ import base64
 from django.db import models
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
-# pip install pycrypto
+# pip install pycryptodome
 from Crypto.PublicKey import RSA
-from Crypto.Signature import PKCS1_v1_5
+from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
 
 from django.conf import settings
@@ -23,6 +23,27 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
         Token.objects.create(user=instance)
 
 
+def test_sign(priv_key, cleartext):
+    '''
+    Use this function to unit test rsa PKCS#1 v1.5 signing process.
+    param: priv_key, string of rsa private key
+    param: cleartext, string of data that will be signed by the key and
+           signature will be based on.
+
+    returns byte encoded hex of signature.
+    '''
+    from Crypto.Signature import pkcs1_15
+    from Crypto.Hash import SHA256
+    from Crypto.PublicKey import RSA
+    
+    message = data.encode('utf-8')
+    key = RSA.import_key(priv_key)
+    h = SHA256.new(message)
+    signature = pkcs1_15.new(key).sign(h)
+    
+    return signature
+
+
 def verify_sign(pub_key, signature, data):
     '''
     Verifies with a public key from whom the data came that it was indeed
@@ -33,13 +54,16 @@ def verify_sign(pub_key, signature, data):
     return: Boolean. True if the signature is valid; False otherwise.
     '''
     rsakey = RSA.importKey(pub_key)
-    signer = PKCS1_v1_5.new(rsakey)
+    signer = pkcs1_15.new(rsakey)
     digest = SHA256.new()
     # Assumes the data is base64 encoded to begin with
     digest.update(data.encode('utf-8'))
-    if signer.verify(digest, base64.b64decode(signature)):
+
+    try:
+        signer.verify(digest, base64.b64decode(signature))
         return True
-    return False
+    except (ValueError, TypeError):
+        return False
 
 class Job(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
@@ -49,11 +73,15 @@ class Job(models.Model):
         (STATUS_PENDING, "Pending"),
         (STATUS_DONE, "Done"),
     )
-    signature = models.TextField(default='', help_text='Paste security signature of command.')
-    _output = models.TextField(default='')
+    signature = models.TextField(default='', 
+            help_text='Paste RSA PKCS#1 v1.5 signature of command. Ensure final input is base64 encoded.',
+            blank=False,)
+    _output = models.TextField(default='', 
+            help_text='Leave blank. This will dispay the result of the command.',
+            blank=True,)
 
     cmd_list = models.TextField(
-        help_text='Command separated list of command and parameters.',
+        help_text='Comma separated list of command and parameters. e.g. ls,-la',
         blank=False,
         null=False,
     )
@@ -120,7 +148,7 @@ class Job(models.Model):
             if not public_key:
                 error = 'User has no public key'
             elif not verify_sign(public_key, rsa_signature, cmd):
-                error = 'Unable to verify command signature'
+                error = f'Unable to verify command signature\n{public_key}, {cmd}'
             else:
                 signature_verified = True
         except:

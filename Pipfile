@@ -13,9 +13,12 @@ django-dramatiq = "*"
 dramatiq = {extras = ["watch", "redis"]}
 gunicorn = "*"
 redis = "*"
-"psycopg2" = "*"
+psycopg2 = "*"
 whitenoise = "*"
-
+django_tables2 = "*"
+djangorestframework = "*"
+pika = "*"
+pycryptodome = "*"
 
 [dev-packages]
 
