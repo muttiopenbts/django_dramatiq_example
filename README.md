@@ -15,15 +15,22 @@ sudo apt install rabbitmq-server
 rabbitmq-server -detached
 ```
 ### Code
-* Clone the repo, then run 
-```pipenv install```.
+* Clone the repo, then run   
+```pipenv install```
 * Run [Redis][redis].
 ### Web
-* Run the web server: ```python manage.py runserver```
-* Run the workers: ```python manage.py rundramatiq```
+* Run the web server:  
+```python manage.py runserver```
+* Run the workers(agents):  
+```python manage.py rundramatiq```
 
 ## Test
+* Generate rsa key pairs  
+```
+% openssl genrsa -out ~/cascade_2048_rsa.private 2048
+% openssl rsa -in ~/cascade_2048_rsa.private -out ~/cascade_2048_rsa.pub -pubout -outform PEM
 
+```
 
 ## License
 
