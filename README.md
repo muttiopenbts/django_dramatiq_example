@@ -6,7 +6,11 @@ An example app demonstrating [django_dramatiq][django_dramatiq].
 
 
 ## Setup
-
+* Services  
+```
+sudo apt install rabbitmq-server
+rabbitmq-server -detached
+```
 * Clone the repo, then run 
 ```pipenv install```.
 * Run [Redis][redis].
