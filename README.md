@@ -16,13 +16,37 @@ rabbitmq-server -detached
 ```
 ### Code
 * Clone the repo, then run   
-```pipenv install```
+```
+git clone <REPO>
+cd <REPO>
+pipenv install
+```
 * Run [Redis][redis].
+### Create Django user  
+```
+pipenv shell
+python manage.py createsuperuser
+<WEB_USERNAME>
+<WEB_PASSWORD>
+```
+
 ### Web
 * Run the web server:  
-```python manage.py runserver```
+```
+pipenv shell
+export SECRET_KEY=“<SECRET_KEY>“
+export RABBIT_USER=“<NAME> #guest“
+export RABBIT_PASS=“<PASSWORD> #guest“
+python manage.py runserver
+```
 * Run the workers(agents):  
-```python manage.py rundramatiq```
+```
+pipenv shell
+export SECRET_KEY=“<SECRET_KEY>“
+export RABBIT_USER=“<NAME> #guest“
+export RABBIT_PASS=“<PASSWORD> #guest“
+python manage.py rundramatiq
+```
 
 ## Test
 * Generate rsa key pairs  
