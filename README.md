@@ -39,6 +39,7 @@ pipenv install
 ### Create Django user  
 ```
 pipenv shell
+export SECRET_KEY=“<SECRET_KEY>“
 python manage.py createsuperuser
 <WEB_USERNAME>
 <WEB_PASSWORD>
