@@ -22,9 +22,9 @@ python -m pip install pipenv
 ```
 brew install postgresql (macos)
 ```
-* openssl
-    Might need to include openssl lib
-    e.g. 
+* openssl  
+    Might need to include openssl lib. 
+    e.g.  
     ```
     export LDFLAGS="-I/usr/local/opt/openssl/include -L/usr/local/opt/openssl/lib"
     ```
