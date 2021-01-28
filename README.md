@@ -10,10 +10,16 @@ The user submitting the os command must digitally sign the request with a privat
 ## Setup
 ### Dependencies
 * rabbitmq  
-```
-sudo apt install rabbitmq-server
-rabbitmq-server -detached
-```
+    Linux  
+    ```
+    sudo apt install rabbitmq-server
+    rabbitmq-server -detached
+    ```
+    Macos  
+    ```
+    brew install rabbitmq
+    brew services start rabbitmq
+    ```
 * pipenv  
 ```
 python -m pip install pipenv
