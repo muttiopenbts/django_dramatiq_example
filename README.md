@@ -8,14 +8,28 @@ This example app is designed to accept OS commands from the http service and exe
 The user submitting the os command must digitally sign the request with a private key, which the corresponding public key in the app will verify the message.
 
 ## Setup
-### Services
+### Dependencies
 * rabbitmq  
 ```
 sudo apt install rabbitmq-server
 rabbitmq-server -detached
 ```
+* pipenv  
+```
+python -m pip install pipenv
+```
+* postgresql   
+```
+brew install postgresql (macos)
+```
+* openssl
+    Might need to include openssl lib
+    e.g. 
+    ```
+    export LDFLAGS="-I/usr/local/opt/openssl/include -L/usr/local/opt/openssl/lib"
+    ```
 ### Code
-* Clone the repo, then run   
+* Clone the repo, then run  
 ```
 git clone <REPO>
 cd <REPO>
