@@ -58,6 +58,9 @@ coverage.xml
 *.log
 local_settings.py
 db.sqlite3
+static/
+staticfiles/
+components/
 
 # Flask stuff:
 instance/
@@ -77,6 +80,7 @@ target/
 
 # pyenv
 .python-version
+*swp
 
 # celery beat schedule file
 celerybeat-schedule

@@ -19,6 +19,9 @@ django_tables2 = "*"
 djangorestframework = "*"
 pika = "*"
 pycryptodome = "*"
+WebTest = "*"
+django-webtest = "*"
+coverage = "*"
 
 [dev-packages]
 

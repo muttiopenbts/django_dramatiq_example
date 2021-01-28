@@ -22,4 +22,4 @@ class JobSerializer(serializers.HyperlinkedModelSerializer):
         depth = 0
 
     def create(self, validated_data):
-            return Job.objects.create(**validated_data)
+        return Job.objects.create(**validated_data)

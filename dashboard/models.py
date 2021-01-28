@@ -172,7 +172,7 @@ class Job(models.Model):
 
 
 class UserPublicKey(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE,default=1)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,default=1, related_name='key')
     public_key = models.TextField(default='',help_text='Upload user public key')
     created_at = models.DateTimeField(
         auto_now_add=True,

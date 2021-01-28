@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+    <section class="row">
+    <header class="large-12 columns">
+        <h1>Welcome</h1>
+        <hr>
+    </header>
+    </section>
+
+    <section class="row">
+
+    <div class="large-8 columns">
+        {% block content %}{% endblock %}
+    </div>
+
+    <div class="large-4 columns">
+    </div>
+
+    </section>
+
+</body>
+</html>

@@ -8,10 +8,14 @@ from django.forms.models import model_to_dict
 from django.http import HttpResponseRedirect
 from django_tables2 import SingleTableView
 import django_tables2 as tables
+from django.views.generic.base import TemplateView
 
 from .models import Job
 from .tasks import process_job
 
+
+class HomeView(TemplateView):
+    template_name = 'index.html'
 
 class JobTable(tables.Table):
     signature = tables.Column(attrs={'td': {'style': 'width: 100px; overflow: auto'}})
@@ -46,7 +50,7 @@ class JobCreate(LoginRequiredMixin, CreateView):
         'signature',
     ]
 
-    success_url = reverse_lazy('dashboard:index')
+    success_url = reverse_lazy('dashboard:jobs_list')
 
     def form_valid(self, form):
         user = self.request.user
