@@ -40,6 +40,7 @@ pipenv install
 ```
 pipenv shell
 export SECRET_KEY=“<SECRET_KEY>“
+python manage.py migrate
 python manage.py createsuperuser
 <WEB_USERNAME>
 <WEB_PASSWORD>
