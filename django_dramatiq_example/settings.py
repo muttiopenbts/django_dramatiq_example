@@ -29,6 +29,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1',]
 
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
 
 # Application definition
 
@@ -45,6 +48,7 @@ INSTALLED_APPS = [
     'django_dramatiq',
     'dashboard',
     'djangobower',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -56,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'django_dramatiq_example.urls'
@@ -111,11 +116,12 @@ RABBIT_USER = os.environ.get("RABBIT_USER", 'guest')
 RABBIT_PASS = os.environ.get("RABBIT_PASS", 'guest')
 
 DRAMATIQ_BROKER_URL = os.getenv(
-	"RABBITMQ_URL", "amqp://{}:{}@{}:5672".format(RABBIT_USER,RABBIT_PASS,RABBIT_SERVER)
+	"RABBITMQ_URL", f'amqp://{RABBIT_USER}:{RABBIT_PASS}@{RABBIT_SERVER}:5672'
 )
 
 DRAMATIQ_BROKER = {
     "BROKER": "dramatiq.brokers.rabbitmq.RabbitmqBroker",
+    "URL": DRAMATIQ_BROKER_URL,
     "MIDDLEWARE": [
         "dramatiq.middleware.AgeLimit",
         "dramatiq.middleware.TimeLimit",
@@ -150,7 +156,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Los_Angeles'
 
 USE_I18N = True
 
@@ -163,14 +169,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
-#STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
-#STATIC_URL = '/static/'
 STATIC_URL = '/static/'
 
 # Extra places for collectstatic to find static files.
 #STATICFILES_DIRS = (
-    #os.path.join(PROJECT_ROOT, 'static'),
     #os.path.join(PROJECT_ROOT, 'static'),
 #)
 

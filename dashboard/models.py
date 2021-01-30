@@ -36,7 +36,7 @@ def test_sign(priv_key, cleartext):
     from Crypto.Hash import SHA256
     from Crypto.PublicKey import RSA
     
-    message = data.encode('utf-8')
+    message = cleartext.encode('utf-8')
     key = RSA.import_key(priv_key)
     h = SHA256.new(message)
     signature = pkcs1_15.new(key).sign(h)
@@ -76,9 +76,6 @@ class Job(models.Model):
     signature = models.TextField(default='', 
             help_text='Paste RSA PKCS#1 v1.5 signature of command. Ensure final input is base64 encoded.',
             blank=False,)
-    _output = models.TextField(default='', 
-            help_text='Leave blank. This will dispay the result of the command.',
-            blank=True,)
 
     cmd_list = models.TextField(
         help_text='Comma separated list of command and parameters. e.g. ls,-la',
@@ -96,13 +93,22 @@ class Job(models.Model):
         auto_now_add=True,
     )
 
-    def get_output(self):
+    _output = models.TextField(default='', 
+            help_text='Leave blank. This will dispay the result of the command.',
+            blank=True,)
+    
+    @property
+    def output(self):
         if self._output:
             try:
                 output = base64.urlsafe_b64decode(self._output)
                 return output.decode('utf-8','ignore')
             except Exception as e:
                 return("Problem retrieving output\n{}".format(e))
+
+    @output.setter
+    def output(self, value):
+        self._output = value
 
     def _process(self):
         output = subprocess.check_output(self.cmd_list.split(','))

@@ -8,7 +8,7 @@ This example app is designed to accept OS commands from the http service and exe
 The user submitting the os command must digitally sign the request with a private key, which the corresponding public key in the app will verify the message.
 
 ## Setup
-### Services
+### Services & Misc
 * rabbitmq  
 ```
 sudo apt install rabbitmq-server
@@ -39,6 +39,16 @@ export RABBIT_USER=“<NAME>" #guest
 export RABBIT_PASS=“<PASSWORD>" #guest
 python manage.py runserver
 ```
+* Bower  
+```
+npm install -g bower
+pipenv shell
+export SECRET_KEY=“<SECRET_KEY>“
+export RABBIT_USER=“<NAME>" #guest
+export RABBIT_PASS=“<PASSWORD>" #guest
+python manage.py bower install
+python manage.py collectstatic
+```
 * Run the workers(agents):  
 ```
 pipenv shell
@@ -57,6 +67,10 @@ python manage.py rundramatiq
 * Sign the OS command  
 ```
 % echo -n "uname" | openssl dgst -sha256 -sign ~/cascade_2048_rsa.private -out sha256_uname.sign
+```
+or  
+```
+echo -n "uname" | openssl dgst -sha256 -sign ~/cascade_2048_rsa.private| base64
 ```
 * Verify the signature 
 ```

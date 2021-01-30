@@ -19,11 +19,14 @@ class HomeView(TemplateView):
 
 class JobTable(tables.Table):
     signature = tables.Column(attrs={'td': {'style': 'width: 100px; overflow: auto'}})
-    get_output = tables.TemplateColumn('{{ record.get_output|linebreaks }}')
+
+    # Specify Job._output as the real model's field for sorting on
+    output = tables.TemplateColumn('{{ record.output|linebreaks }}', order_by=("_output"))
+
     class Meta:
         model = Job
         attrs = {'class': 'table table-hover table-bordered'}
-        fields = ('id','cmd_list','user','get_output','signature',)
+        fields = ('id','cmd_list','user','output','signature',)
 
 
 class IndexView(LoginRequiredMixin, SingleTableView):

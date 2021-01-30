@@ -22,6 +22,8 @@ pycryptodome = "*"
 WebTest = "*"
 django-webtest = "*"
 coverage = "*"
+django-bower = "*"
+uritemplate = "*"
 
 [dev-packages]
 
