@@ -10,21 +10,42 @@ The user submitting the os command must digitally sign the request with a privat
 ## Setup
 ### Services & Misc
 * rabbitmq  
+    Linux  
+    ```
+    sudo apt install rabbitmq-server
+    rabbitmq-server -detached
+    ```
+    Macos  
+    ```
+    brew install rabbitmq
+    brew services start rabbitmq
+    ```
+* pipenv  
 ```
-sudo apt install rabbitmq-server
-rabbitmq-server -detached
+python -m pip install pipenv
 ```
+* postgresql   
+```
+brew install postgresql (macos)
+```
+* openssl  
+    Might need to include openssl lib. 
+    e.g.  
+    ```
+    export LDFLAGS="-I/usr/local/opt/openssl/include -L/usr/local/opt/openssl/lib"
+    ```
 ### Code
-* Clone the repo, then run   
+* Clone the repo, then run  
 ```
 git clone <REPO>
 cd <REPO>
 pipenv install
 ```
-* Run [Redis][redis].
 ### Create Django user  
 ```
 pipenv shell
+export SECRET_KEY=“<SECRET_KEY>“
+python manage.py migrate
 python manage.py createsuperuser
 <WEB_USERNAME>
 <WEB_PASSWORD>
