@@ -1,6 +1,7 @@
 import time
 import subprocess
 import base64
+import json
 from django.db import models
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
@@ -183,3 +184,60 @@ class UserPublicKey(models.Model):
     created_at = models.DateTimeField(
         auto_now_add=True,
     )
+
+
+class Rpc(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    rpc = models.TextField(default='',help_text='Remote procedure call')
+    params = models.TextField(default='',help_text='Base64 encoded parameters for RPC function')
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    STATUS_PENDING = "pending"
+    STATUS_DONE = "done"
+    STATUSES = (
+        (STATUS_PENDING, "Pending"),
+        (STATUS_DONE, "Done"),
+    )
+
+    status = models.CharField(
+        max_length=7,
+        choices=STATUSES,
+        default=STATUS_PENDING,
+    )
+
+    output = models.TextField(default='', 
+            help_text='Leave blank. This will dispay the result of the rpc.',
+            blank=True,)
+
+    def process(self):
+        '''Convert rpc string to method name and run.
+        Can pass argument of dictionary to method as base64 encoded json.
+        TODO: Try to implement method argument encoded as pickle.
+        TODO: Implement public key signing function on rpc calls.
+
+        Params
+        self.rpc:       string representing method name to call.
+        self.params:    base64 encoded json. e.g. {"arg1_int": 4, "arg2_str": "hello"}, then base64 
+        '''
+        print(f'Process: {self.rpc}')
+        # Dispatch rpc
+        method_to_call = getattr(self, self.rpc)
+        # Convert params field from base64 to json
+        params_json = base64.b64decode(self.params)
+        params_dic = json.loads(params_json)
+
+        method_to_call(params_dic)
+
+    def multiply(self, params_dict):
+        '''
+        Example of a user defined rpc.
+        '''
+        value = params_dict['integer']
+        value *= value
+        self.output = value
+
+    def square(self, params_dict):
+        value = params_dict['integer']
+        self.output = value * value

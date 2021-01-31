@@ -10,9 +10,8 @@ name = "pypi"
 dj-database-url = "*"
 django = "*"
 django-dramatiq = "*"
-dramatiq = {extras = ["watch", "redis"]}
+dramatiq = {extras = ["watch", "rabbitmq",]}
 gunicorn = "*"
-redis = "*"
 psycopg2 = "*"
 whitenoise = "*"
 django_tables2 = "*"

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "1ed8e46af0a7d3f1bb424383863fb4db244c8c2898356c2b5881bdc16eab41dd"
+            "sha256": "1fa9967137f6c897f274885a74c50ffcd6b0ea264d53919d391fc4e09625e2a4"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -150,7 +150,7 @@
         },
         "dramatiq": {
             "extras": [
-                "redis",
+                "rabbitmq",
                 "watch"
             ],
             "hashes": [
@@ -368,14 +368,6 @@
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'",
             "version": "==5.4.1"
         },
-        "redis": {
-            "hashes": [
-                "sha256:0e7e0cfca8660dea8b7d5cd8c4f6c5e29e11f31158c0b0ae91a397f00e5a05a2",
-                "sha256:432b788c4530cfe16d8d943a09d40ca6c16149727e4afe8c2c9d5580c59d9f24"
-            ],
-            "index": "pypi",
-            "version": "==3.5.3"
-        },
         "six": {
             "hashes": [
                 "sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259",
@@ -399,6 +391,14 @@
             ],
             "markers": "python_version >= '3.5'",
             "version": "==0.4.1"
+        },
+        "uritemplate": {
+            "hashes": [
+                "sha256:07620c3f3f8eed1f12600845892b0e036a2420acf513c53f7de0abd911a5894f",
+                "sha256:5af8ad10cec94f215e3f48112de2022e1d5a37ed427fbd88652fa908f2ab7cae"
+            ],
+            "index": "pypi",
+            "version": "==3.0.1"
         },
         "waitress": {
             "hashes": [

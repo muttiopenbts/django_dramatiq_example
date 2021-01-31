@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django_tables2',
     'rest_framework',
     'rest_framework.authtoken',
+
     'django_dramatiq',
     'dashboard',
     'djangobower',
@@ -108,6 +109,7 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
 DATABASES['default'].update(dj_database_url.config(conn_max_age=600))
 
 # Tasks
@@ -121,16 +123,30 @@ DRAMATIQ_BROKER_URL = os.getenv(
 
 DRAMATIQ_BROKER = {
     "BROKER": "dramatiq.brokers.rabbitmq.RabbitmqBroker",
-    "URL": DRAMATIQ_BROKER_URL,
     "MIDDLEWARE": [
+        "dramatiq.middleware.Prometheus",
         "dramatiq.middleware.AgeLimit",
         "dramatiq.middleware.TimeLimit",
+        "dramatiq.middleware.Callbacks",
         "dramatiq.middleware.Retries",
         "django_dramatiq.middleware.AdminMiddleware",
         "django_dramatiq.middleware.DbConnectionsMiddleware",
     ]
 }
 
+# Defines which database should be used to persist Task objects when the
+# AdminMiddleware is enabled.  The default value is "default".
+DRAMATIQ_TASKS_DATABASE = "default"
+
+DRAMATIQ_RESULT_BACKEND = {
+    "BROKER": "dramatiq.brokers.rabbitmq.RabbitmqBroker",
+    "OPTIONS": {
+        "url": DRAMATIQ_BROKER_URL,
+    },
+    "MIDDLEWARE_OPTIONS": {
+        "result_ttl": 60000
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators

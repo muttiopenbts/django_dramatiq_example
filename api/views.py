@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User, Group
-from dashboard.models import Job
+from dashboard.models import Job, Rpc
 from rest_framework import viewsets
-from .serializers import UserSerializer, GroupSerializer, JobSerializer
+from .serializers import UserSerializer, GroupSerializer, JobSerializer, RpcSerializer
 from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -32,6 +32,22 @@ class JobViewSet(viewsets.ModelViewSet):
     """
     queryset = Job.objects.all()
     serializer_class = JobSerializer
+
+    @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer],methods='POST')
+    def highlight(self, request, *args, **kwargs):
+        snippet = self.get_object()
+        return Response(snippet.highlighted)
+
+    def perform_create(self, serializer):
+        # Save the user that submitted the job request
+        serializer.save(user=self.request.user)
+
+class RpcViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows RPCs to be viewed or edited.
+    """
+    queryset = Rpc.objects.all()
+    serializer_class = RpcSerializer
 
     @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer],methods='POST')
     def highlight(self, request, *args, **kwargs):

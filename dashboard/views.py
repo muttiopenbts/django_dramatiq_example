@@ -12,6 +12,8 @@ from django.views.generic.base import TemplateView
 
 from .models import Job
 from .tasks import process_job
+from .models import Rpc
+from .tasks import process_rpc
 
 
 class HomeView(TemplateView):
@@ -62,5 +64,26 @@ class JobCreate(LoginRequiredMixin, CreateView):
         self.object = form.save()
         # Process job will reference job pk
         process_job.send(self.object.pk)
+
+        return HttpResponseRedirect(self.get_success_url())
+
+class Rpc(LoginRequiredMixin, CreateView):
+    model = Rpc
+    template_name = 'dashboard/index.html'
+
+    fields = [
+        'rpc',
+        'params',
+    ]
+
+    success_url = reverse_lazy('dashboard:jobs_list')
+
+    def form_valid(self, form):
+        user = self.request.user
+        # Save the form and values to db
+        form.instance.user = user
+        self.object = form.save()
+        # Process rpc will reference rpc pk
+        process_rpc.send(self.object.pk)
 
         return HttpResponseRedirect(self.get_success_url())
