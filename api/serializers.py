@@ -32,7 +32,7 @@ class JobSerializer(serializers.HyperlinkedModelSerializer):
 class RpcSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Rpc
-        fields = ('rpc', 'params')
+        fields = ('rpc', 'params', 'signature', 'timestamp',)
         depth = 0
 
     def create(self, validated_data):

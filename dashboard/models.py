@@ -49,10 +49,14 @@ def verify_sign(pub_key, signature, data):
     '''
     Verifies with a public key from whom the data came that it was indeed
     signed by their private key
-    param: public_key, string of rsa public key
-    param: signature base64 encoded signature to be verified
-    param: data, plain text data from which signature is derived from
-    return: Boolean. True if the signature is valid; False otherwise.
+
+    Params
+        public_key: string of rsa public key
+        signature:  base64 encoded signature to be verified
+        data:       plain text data from which signature is derived from
+    
+    Return
+        Boolean:    True if the signature is valid; False otherwise.
     '''
     rsakey = RSA.importKey(pub_key)
     signer = pkcs1_15.new(rsakey)
@@ -189,10 +193,14 @@ class UserPublicKey(models.Model):
 class Rpc(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     rpc = models.TextField(default='',help_text='Remote procedure call')
-    params = models.TextField(default='',help_text='Base64 encoded parameters for RPC function')
+    # If rpc has no params, caller must at least specify empty dict {}.
+    params = models.TextField(default='',
+            help_text='Base64 encoded parameters in json format to be passed to the RPC function.')
     created_at = models.DateTimeField(
         auto_now_add=True,
     )
+
+    timestamp = models.DateTimeField(default = "2020-01-01 00:00:00")
 
     STATUS_PENDING = "pending"
     STATUS_DONE = "done"
@@ -211,6 +219,44 @@ class Rpc(models.Model):
             help_text='Leave blank. This will dispay the result of the rpc.',
             blank=True,)
 
+    signature = models.TextField(default='', 
+            help_text='Paste RSA PKCS#1 v1.5 signature of command. Ensure final input is base64 encoded.',
+            blank=False,)
+
+    def verify_signature(self):
+        '''Verify provided signature for rpc.
+        The signature provided by the caller has a very specific format.
+        TODO: After a signature is verified as accurate, subsequent validation will take place to
+        reduce likelihood of replay attacks (timestamps).
+        '''
+        public_key = None
+        signaure_json_str = json.dumps({ 
+            'rpc': self.rpc,
+            'rpc_params': self.params,
+            'timestamp' : self.timestamp.isoformat(),
+        })
+        signature_verified = False
+        print(f'{repr(signaure_json_str)}')
+
+        # Verify cmd rsa signature using users public key
+        if self.user.pk:
+            try:
+                public_key = UserPublicKey.objects.get(pk=self.user.pk).public_key
+            except UserPublicKey.DoesNotExist:
+                pass
+
+        try:
+            if not public_key:
+                print(f'User has no public key')
+            elif not verify_sign(public_key, self.signature, signaure_json_str):
+                print(f'Unable to verify command signature\n{public_key}\n{signaure_json_str}')
+            else:
+                signature_verified = True
+        except:
+            print(f'Verify signature failed: {public_key}, {signaure_json_str}')
+
+        return signature_verified
+
     def process(self):
         '''Convert rpc string to method name and run.
         Can pass argument of dictionary to method as base64 encoded json.
@@ -222,22 +268,35 @@ class Rpc(models.Model):
         self.params:    base64 encoded json. e.g. {"arg1_int": 4, "arg2_str": "hello"}, then base64 
         '''
         print(f'Process: {self.rpc}')
-        # Dispatch rpc
-        method_to_call = getattr(self, self.rpc)
-        # Convert params field from base64 to json
-        params_json = base64.b64decode(self.params)
-        params_dic = json.loads(params_json)
 
-        method_to_call(params_dic)
+        # Test if rpc is authorized by verifying callers signature.
+        if self.verify_signature():
+            # Dispatch rpc
+            method_to_call = getattr(self, self.rpc)
+            # Convert params field from base64 to json
+            params_json = base64.b64decode(self.params)
+            params_dic = None
+
+            try:
+                params_dic = json.loads(params_json)
+            except ValueError: 
+                raise Exception(f'Decoding rpc params as json has failed.')
+
+            method_to_call(params_dic)
 
     def multiply(self, params_dict):
+        '''Example of a user defined rpc.
         '''
-        Example of a user defined rpc.
-        '''
-        value = params_dict['integer']
-        value *= value
-        self.output = value
+        list_of_ints = params_dict['list']
+        total = 1
+
+        for x in list_of_ints:
+            total *= x
+
+        self.output = total
 
     def square(self, params_dict):
+        '''Example of being able to accept a numeric python funtion parameter.
+        '''
         value = params_dict['integer']
         self.output = value * value

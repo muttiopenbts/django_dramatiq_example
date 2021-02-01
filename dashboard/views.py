@@ -74,6 +74,8 @@ class Rpc(LoginRequiredMixin, CreateView):
     fields = [
         'rpc',
         'params',
+        'signature',
+        'timestamp',
     ]
 
     success_url = reverse_lazy('dashboard:jobs_list')
